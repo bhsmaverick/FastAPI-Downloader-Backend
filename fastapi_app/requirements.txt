@@ -1,0 +1,6 @@
+fastapi==0.109.2
+uvicorn==0.27.1
+pydantic==2.6.1
+arq==0.25.0
+redis==5.0.1
+yt-dlp>=2024.3.10

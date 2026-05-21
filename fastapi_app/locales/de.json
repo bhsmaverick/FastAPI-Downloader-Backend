@@ -1,0 +1,12 @@
+{
+  "task_started": "Aufgabe gestartet",
+  "error_enqueuing": "Fehler beim Einreihen",
+  "task_not_found": "Aufgabe nicht gefunden",
+  "status_msg": "Status abgerufen",
+  "queued": "Aufgabe in Warteschlange",
+  "processing": "Verarbeitung",
+  "downloading": "Herunterladen",
+  "finalizing": "Abschließen",
+  "completed": "Abgeschlossen",
+  "error_processing": "Verarbeitungsfehler"
+}

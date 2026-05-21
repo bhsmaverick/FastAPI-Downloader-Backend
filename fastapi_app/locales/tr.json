@@ -1,0 +1,12 @@
+{
+  "task_started": "Görev başlatıldı",
+  "error_enqueuing": "Sıraya ekleme hatası",
+  "task_not_found": "Görev bulunamadı",
+  "status_msg": "Durum alındı",
+  "queued": "Görev kuyrukta",
+  "processing": "İşleniyor",
+  "downloading": "İndiriliyor",
+  "finalizing": "Sonuçlandırılıyor",
+  "completed": "Tamamlandı",
+  "error_processing": "İşleme hatası"
+}

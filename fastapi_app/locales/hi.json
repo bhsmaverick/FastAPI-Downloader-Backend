@@ -1,0 +1,12 @@
+{
+  "task_started": "कार्य शुरू",
+  "error_enqueuing": "कतार त्रुटि",
+  "task_not_found": "कार्य नहीं मिला",
+  "status_msg": "स्थिति प्राप्त",
+  "queued": "कार्य कतार में है",
+  "processing": "प्रसंस्करण",
+  "downloading": "डाउनलोड कर रहा है",
+  "finalizing": "अंतिम रूप दे रहा है",
+  "completed": "पूर्ण",
+  "error_processing": "प्रसंस्करण त्रुटि"
+}

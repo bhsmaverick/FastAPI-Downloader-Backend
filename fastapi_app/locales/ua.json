@@ -1,0 +1,12 @@
+{
+  "task_started": "Завдання розпочато",
+  "error_enqueuing": "Помилка черги",
+  "task_not_found": "Завдання не знайдено",
+  "status_msg": "Статус отримано",
+  "queued": "Завдання в черзі",
+  "processing": "Обробка",
+  "downloading": "Завантаження",
+  "finalizing": "Завершення",
+  "completed": "Завершено",
+  "error_processing": "Помилка обробки"
+}

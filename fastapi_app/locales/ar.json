@@ -1,0 +1,12 @@
+{
+  "task_started": "بدأت المهمة",
+  "error_enqueuing": "خطأ في قائمة الانتظار",
+  "task_not_found": "المهمة غير موجودة",
+  "status_msg": "الحالة المسترجعة",
+  "queued": "مهمة في قائمة الانتظار",
+  "processing": "جاري المعالجة",
+  "downloading": "تنزيل",
+  "finalizing": "الانتهاء",
+  "completed": "منجز",
+  "error_processing": "خطأ في المعالجة"
+}

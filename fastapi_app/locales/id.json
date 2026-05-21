@@ -1,0 +1,12 @@
+{
+  "task_started": "Tugas dimulai",
+  "error_enqueuing": "Kesalahan antrean",
+  "task_not_found": "Tugas tidak ditemukan",
+  "status_msg": "Status diambil",
+  "queued": "Tugas dalam antrean",
+  "processing": "Memproses",
+  "downloading": "Mengunduh",
+  "finalizing": "Menyelesaikan",
+  "completed": "Selesai",
+  "error_processing": "Kesalahan pemrosesan"
+}

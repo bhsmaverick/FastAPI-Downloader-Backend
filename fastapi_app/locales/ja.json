@@ -1,0 +1,12 @@
+{
+  "task_started": "タスク開始",
+  "error_enqueuing": "キューエラー",
+  "task_not_found": "タスクが見つかりません",
+  "status_msg": "ステータス取得済み",
+  "queued": "キューに入ったタスク",
+  "processing": "処理中",
+  "downloading": "ダウンロード中",
+  "finalizing": "終了中",
+  "completed": "完了",
+  "error_processing": "処理エラー"
+}

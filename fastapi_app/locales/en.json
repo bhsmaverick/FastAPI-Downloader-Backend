@@ -1,0 +1,12 @@
+{
+  "task_started": "Task started",
+  "error_enqueuing": "Error enqueuing task",
+  "task_not_found": "Task not found",
+  "status_msg": "Status retrieved",
+  "queued": "Task is queued",
+  "processing": "Processing",
+  "downloading": "Downloading",
+  "finalizing": "Finalizing",
+  "completed": "Completed",
+  "error_processing": "Processing error"
+}

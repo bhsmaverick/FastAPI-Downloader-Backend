@@ -1,0 +1,12 @@
+{
+  "task_started": "Tarea iniciada",
+  "error_enqueuing": "Error en la cola",
+  "task_not_found": "Tarea no encontrada",
+  "status_msg": "Estado obtenido",
+  "queued": "Tarea en cola",
+  "processing": "Procesando",
+  "downloading": "Descargando",
+  "finalizing": "Finalizando",
+  "completed": "Completado",
+  "error_processing": "Error de procesamiento"
+}

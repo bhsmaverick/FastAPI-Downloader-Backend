@@ -1,0 +1,6 @@
+{
+  "name": "FastAPI Downloader Backend",
+  "description": "High-traffic backend API architecture utilizing FastAPI, Redis Arq worker queues and native JSON 14-lingual localization structures.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

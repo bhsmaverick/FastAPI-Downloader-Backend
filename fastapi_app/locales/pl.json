@@ -1,0 +1,12 @@
+{
+  "task_started": "Zadanie rozpoczęte",
+  "error_enqueuing": "Błąd kolejkowania",
+  "task_not_found": "Zadanie nie znalezione",
+  "status_msg": "Status pobrany",
+  "queued": "Zadanie w kolejce",
+  "processing": "Przetwarzanie",
+  "downloading": "Pobieranie",
+  "finalizing": "Zakończenie",
+  "completed": "Zakończone",
+  "error_processing": "Błąd przetwarzania"
+}

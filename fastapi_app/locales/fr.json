@@ -1,0 +1,12 @@
+{
+  "task_started": "Tâche démarrée",
+  "error_enqueuing": "Erreur de file d'attente",
+  "task_not_found": "Tâche introuvable",
+  "status_msg": "Statut récupéré",
+  "queued": "Tâche en file d'attente",
+  "processing": "Traitement",
+  "downloading": "Téléchargement",
+  "finalizing": "Finalisation",
+  "completed": "Terminé",
+  "error_processing": "Erreur de traitement"
+}

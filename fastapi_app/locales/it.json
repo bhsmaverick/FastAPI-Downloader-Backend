@@ -1,0 +1,12 @@
+{
+  "task_started": "Attività avviata",
+  "error_enqueuing": "Errore accodamento",
+  "task_not_found": "Attività non trovata",
+  "status_msg": "Stato recuperato",
+  "queued": "Attività in coda",
+  "processing": "In elaborazione",
+  "downloading": "Download",
+  "finalizing": "Finalizzando",
+  "completed": "Completato",
+  "error_processing": "Errore elaborazione"
+}

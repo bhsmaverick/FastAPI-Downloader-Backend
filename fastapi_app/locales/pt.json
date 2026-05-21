@@ -1,0 +1,12 @@
+{
+  "task_started": "Tarefa iniciada",
+  "error_enqueuing": "Erro na fila",
+  "task_not_found": "Tarefa não encontrada",
+  "status_msg": "Status obtido",
+  "queued": "Tarefa na fila",
+  "processing": "Processando",
+  "downloading": "Baixando",
+  "finalizing": "Finalizando",
+  "completed": "Concluído",
+  "error_processing": "Erro de processamento"
+}

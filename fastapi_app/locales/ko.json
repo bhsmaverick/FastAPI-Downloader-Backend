@@ -1,0 +1,12 @@
+{
+  "task_started": "작업 시작됨",
+  "error_enqueuing": "대기열 오류",
+  "task_not_found": "작업을 찾을 수 없음",
+  "status_msg": "가져온 상태",
+  "queued": "작업 대기 중",
+  "processing": "처리 중",
+  "downloading": "다운로드 중",
+  "finalizing": "마무리",
+  "completed": "완료됨",
+  "error_processing": "처리 오류"
+}
