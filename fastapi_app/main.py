@@ -3,6 +3,7 @@ import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from arq import create_pool
+import redis.asyncio as aioredis
 
 from .config import redis_settings
 from .i18n import I18nMiddleware
@@ -16,10 +17,21 @@ async def lifespan(app: FastAPI):
     # Lifecycle hook mapping strictly ensuring Redis queue allocations fire efficiently on boot.
     logger.info("Allocating primary distribution bindings for ARQ Redis Queues...")
     app.state.arq_pool = await create_pool(redis_settings)
+    
+    # Initialize process-wide single global connection pool for the API endpoints to reuse
+    app.state.redis_pool = aioredis.ConnectionPool(
+        host=redis_settings.host,
+        port=redis_settings.port,
+        db=redis_settings.database,
+        max_connections=50
+    )
     yield
     # Shutdown unloads gracefully. 
     logger.info("Executing graceful cleanup of ARQ connection footprints...")
     await app.state.arq_pool.close()
+    
+    logger.info("Disconnecting global Redis connection pool...")
+    await app.state.redis_pool.disconnect()
 
 app = FastAPI(
     title="High-Traffic Media Downloader System",

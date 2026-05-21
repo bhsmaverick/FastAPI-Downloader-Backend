@@ -25,8 +25,8 @@ async def create_download_task(request: Request, payload: DownloadRequest):
     if not job:
         raise HTTPException(status_code=500, detail=t("error_enqueuing"))
 
-    # Initialize progress tracking actively via Redis to ensure instant 0 overhead availability
-    redis_client = aioredis.Redis(host=redis_settings.host, port=redis_settings.port, db=redis_settings.database)
+    # Initialize progress tracking actively via Redis cache boundaries
+    redis_client = aioredis.Redis(connection_pool=request.app.state.redis_pool)
     initial_state = {
         "status": "queued",
         "progress": 0.0,
@@ -38,7 +38,6 @@ async def create_download_task(request: Request, payload: DownloadRequest):
         json.dumps(initial_state),
         ex=86400  # 1 day persistent tracking expiration window
     )
-    await redis_client.close()
 
     return DownloadTaskResponse(task_id=job.job_id, message=t("task_started"))
 
@@ -46,10 +45,9 @@ async def create_download_task(request: Request, payload: DownloadRequest):
 @router.get("/status/{task_id}", response_model=StatusResponse)
 async def get_download_status(request: Request, task_id: str = Path(..., description="Tracking ID returned on successful download request")):
     t = request.state.t
-    redis_client = aioredis.Redis(host=redis_settings.host, port=redis_settings.port, db=redis_settings.database)
+    redis_client = aioredis.Redis(connection_pool=request.app.state.redis_pool)
 
     raw_data = await redis_client.get(f"task_progress:{task_id}")
-    await redis_client.close()
 
     if not raw_data:
         raise HTTPException(status_code=404, detail=t("task_not_found"))

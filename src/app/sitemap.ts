@@ -28,7 +28,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
         lastModified: new Date(),
         changeFrequency: 'daily',
         priority: path === '' ? 1.0 : 0.8,
-        // Next.js Metadata sitemap specification supports alternates
+        alternates: {
+          languages: languagesMap,
+        },
       });
     });
   });

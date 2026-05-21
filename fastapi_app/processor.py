@@ -7,6 +7,9 @@ import yt_dlp
 
 logger = logging.getLogger(__name__)
 
+# Initialize a single process-wide global thread pool to prevent thread leaks and OS resource exhaustion
+GLOBAL_THREAD_POOL = ThreadPoolExecutor(max_workers=20)
+
 class MediaProcessorError(Exception):
     """Base exception for media processing workflow issues."""
     pass
@@ -14,7 +17,7 @@ class MediaProcessorError(Exception):
 class MediaProcessor:
     def __init__(self, executor: Optional[ThreadPoolExecutor] = None):
         # Dedicated thread pool executor to safely offload synchronous blocking I/O calls (like yt-dlp)
-        self.executor = executor or ThreadPoolExecutor(max_workers=10)
+        self.executor = executor or GLOBAL_THREAD_POOL
 
     async def download(self, url: str, output_dir: str, format_type: str = "mp4", options: Optional[Dict[str, Any]] = None) -> str:
         """
@@ -114,7 +117,7 @@ class MediaProcessor:
         cmd = [
             "ffmpeg", "-y",
             "-i", input_path,
-            "-vf", "crop=ih*9/16:ih",
+            "-vf", "crop='trunc(ih*9/16/2)*2:trunc(ih/2)*2'",
             "-c:v", "libx264",
             "-preset", "superfast",
             "-crf", "23",

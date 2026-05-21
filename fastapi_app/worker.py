@@ -12,12 +12,11 @@ from .processor import MediaProcessor, MediaProcessorError
 
 logger = logging.getLogger(__name__)
 
-async def update_job_progress(job_id: str, status: str, progress: float, message: str, result_url: str = None):
+async def update_job_progress(redis_client, job_id: str, status: str, progress: float, message: str, result_url: str = None):
     """
     Sub-routine executing independent state injections actively to Redis backend cache boundaries, 
-    permitting non-blocking client-polling queries.
+    permitting non-blocking client-polling queries. Reuses the active Redis stream connection.
     """
-    redis_client = aioredis.Redis(host=redis_settings.host, port=redis_settings.port, db=redis_settings.database)
     payload = {
         "status": status,
         "progress": progress,
@@ -25,7 +24,6 @@ async def update_job_progress(job_id: str, status: str, progress: float, message
         "result_url": result_url
     }
     await redis_client.set(f"task_progress:{job_id}", json.dumps(payload), ex=86400)
-    await redis_client.close()
 
 
 
@@ -35,6 +33,7 @@ async def download_media_task(ctx, url: str, output_format: str, options: dict):
     Dispatched completely independently mapped through persistent Redis connection queues.
     """
     job_id = ctx['job_id']
+    redis_client = ctx['redis']
     logger.info(f"Arq worker launched | ID: {job_id} | Target URL: {url} | Requested Target Format: {output_format}")
 
     # Create distinct scratch dir to protect operational workspace parallelism
@@ -45,7 +44,7 @@ async def download_media_task(ctx, url: str, output_format: str, options: dict):
 
     try:
         # Step 1: Active Validation & Resource Allocation
-        await update_job_progress(job_id, "processing", 10.0, "processing")
+        await update_job_progress(redis_client, job_id, "processing", 10.0, "processing")
         
         # Meta extraction
         meta_title = options.get("title")
@@ -53,7 +52,7 @@ async def download_media_task(ctx, url: str, output_format: str, options: dict):
         crop_vertical = options.get("crop_vertical", False)
 
         # Step 2: Main Stream Extraction & Download
-        await update_job_progress(job_id, "downloading", 30.0, "downloading")
+        await update_job_progress(redis_client, job_id, "downloading", 30.0, "downloading")
         
         downloaded_file = await processor.download(
             url=url,
@@ -67,14 +66,14 @@ async def download_media_task(ctx, url: str, output_format: str, options: dict):
 
         # Step 3: Vertical Cropping (only applicable if video files are extracted)
         if crop_vertical and output_format.lower() != "mp3":
-            await update_job_progress(job_id, "processing", 60.0, "processing")
+            await update_job_progress(redis_client, job_id, "processing", 60.0, "processing")
             cropped_file = os.path.join(temp_dir, f"cropped_{os.path.basename(current_file)}")
             current_file = await processor.crop_to_vertical(current_file, cropped_file)
             logger.info(f"Successfully auto-cropped portrait layout video: {current_file}")
 
         # Step 4: Metadata Tagging Injection
         if meta_title or meta_artist:
-            await update_job_progress(job_id, "finalizing", 80.0, "finalizing")
+            await update_job_progress(redis_client, job_id, "finalizing", 80.0, "finalizing")
             tagged_file = os.path.join(temp_dir, f"tagged_{os.path.basename(current_file)}")
             current_file = await processor.inject_metadata(
                 input_path=current_file,
@@ -86,18 +85,18 @@ async def download_media_task(ctx, url: str, output_format: str, options: dict):
 
         # Step 5: Final Serving Storage Asset Layout Mapping via X-Accel-Redirect
         final_url = f"/api/downloads/{job_id}/{os.path.basename(current_file)}"
-        await update_job_progress(job_id, "completed", 100.0, "completed", result_url=final_url)
+        await update_job_progress(redis_client, job_id, "completed", 100.0, "completed", result_url=final_url)
         logger.info(f"Task gracefully concluded | ID: {job_id} | Optimized Serve Link: {final_url}")
 
         return final_url
     
     except MediaProcessorError as mpe:
         logger.error(f"Media extraction runtime failed: {str(mpe)}")
-        await update_job_progress(job_id, "failed", 0.0, "error_processing")
+        await update_job_progress(redis_client, job_id, "failed", 0.0, "error_processing")
         raise
     except Exception as e:
         logger.error(f"Catastrophic halt encountered within task bounds {job_id}: {str(e)}")
-        await update_job_progress(job_id, "failed", 0.0, "error_processing")
+        await update_job_progress(redis_client, job_id, "failed", 0.0, "error_processing")
         raise
 
 

@@ -64,7 +64,7 @@ export default function MediaDownloaderClient({ currentLocale }: MediaDownloader
   useEffect(() => {
     return () => {
       if (pollingIntervalRef.current) {
-        clearInterval(pollingIntervalRef.current);
+        clearTimeout(pollingIntervalRef.current);
       }
     };
   }, []);
@@ -82,7 +82,8 @@ export default function MediaDownloaderClient({ currentLocale }: MediaDownloader
     setResultUrl(null);
     setErrorDetail(null);
     if (pollingIntervalRef.current) {
-      clearInterval(pollingIntervalRef.current);
+      clearTimeout(pollingIntervalRef.current);
+      pollingIntervalRef.current = null;
     }
   };
 
@@ -130,13 +131,14 @@ export default function MediaDownloaderClient({ currentLocale }: MediaDownloader
     }
   };
 
-  // Polling logic querying status periodically
+  // Polling logic querying status periodically using safe recursive setTimeout design pattern
   const startStatusPolling = (id: string) => {
     if (pollingIntervalRef.current) {
-      clearInterval(pollingIntervalRef.current);
+      clearTimeout(pollingIntervalRef.current);
+      pollingIntervalRef.current = null;
     }
 
-    pollingIntervalRef.current = setInterval(async () => {
+    const poll = async () => {
       try {
         const res = await axios.get(`/api/status/${id}`);
         const { status: jobStatus, progress: jobProgress, message: jobMsg, result_url } = res.data;
@@ -149,31 +151,31 @@ export default function MediaDownloaderClient({ currentLocale }: MediaDownloader
           setResultUrl(result_url);
         }
 
-        // Halt interval once terminal statuses are hit
+        // Halt setTimeout recursion once terminal states are reached, otherwise queue the next cycle
         if (jobStatus === 'completed') {
           setProgress(100);
-          if (pollingIntervalRef.current) {
-            clearInterval(pollingIntervalRef.current);
-          }
+          pollingIntervalRef.current = null;
         } else if (jobStatus === 'failed' || jobStatus === 'error') {
-          if (pollingIntervalRef.current) {
-            clearInterval(pollingIntervalRef.current);
-          }
+          pollingIntervalRef.current = null;
+        } else {
+          // Schedule next poll ONLY after current execution has completely finished and resolved
+          pollingIntervalRef.current = setTimeout(poll, 2000);
         }
 
       } catch (err: any) {
         // Safe fail recovery on polling issues
-        if (pollingIntervalRef.current) {
-          clearInterval(pollingIntervalRef.current);
-        }
         setStatus('error');
         let pollingErr = t('error_processing');
         if (err.response && err.response.data && err.response.data.detail) {
           pollingErr = err.response.data.detail;
         }
         setErrorDetail(pollingErr);
+        pollingIntervalRef.current = null;
       }
-    }, 2000);
+    };
+
+    // Start running the first poll cycle after the initial 2000ms delay
+    pollingIntervalRef.current = setTimeout(poll, 2000);
   };
 
   return (
